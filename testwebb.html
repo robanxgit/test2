@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Activities</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1{
+          text-shadow: 0 1px;
+        }
+
+        table {
+            margin: 20px auto;
+            width: 60%;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            background-color: white;
+        }
+
+        input {
+            margin: 10px;
+        }
+
+        #errorMessage {
+            color: rgb(56, 144, 82);
+        }
+    </style>
+</head>
+<body>
+    <h1>Grade Activities</h1>
+
+    <div>
+        <button onclick="addActivity()">Add Activity</button>
+        <label>Activity:</label>
+        <input type="text" id="activityName">
+        <label>Weight:</label>
+        <input type="number" id="activityWeight">
+    </div>
+
+    <div>
+        <button onclick="addGrade()">Add Grade</button>
+        <label>Grade:</label>
+        <input type="number" id="activityGrade">
+        <label>Activity no:</label>
+        <input type="number" id="activityNo">
+    </div>
+
+    <div>
+        <button onclick="deleteActivity()">Delete Activity</button>
+    </div>
+
+    <table id="activityTable">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Activity</th>
+                <th>Percentage</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <p id="errorMessage"></p>
+
+    <script>
+        let activities = [];
+
+        function addActivity() {
+            const activityName = document.getElementById('activityName').value.trim();
+            const activityWeight = document.getElementById('activityWeight').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            errorMessage.innerText = '';
+
+            if (!activityName) {
+                errorMessage.innerText = 'Error Message: Activity name is rejected.';
+                return;
+            }
+
+            if (!activityWeight || activityWeight < 1 || activityWeight > 100) {
+                errorMessage.innerText = 'Error Message: Weight is rejected.';
+                return;
+            }
+
+            activities.push({
+                name: activityName,
+                weight: activityWeight,
+                grade: ''
+            });
+
+            document.getElementById('activityName').value = '';
+            document.getElementById('activityWeight').value = '';
+            updateTable();
+        }
+
+        function addGrade() {
+            const activityNo = document.getElementById('activityNo').value;
+            const grade = document.getElementById('activityGrade').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            errorMessage.innerText = '';
+
+            if (!activityNo || activityNo < 1 || activityNo > activities.length) {
+                errorMessage.innerText = 'Error Message: Activity No is rejected.';
+                return;
+            }
+
+            if (!grade || grade < 0 || grade > 100) {
+                errorMessage.innerText = 'Error Message: Grade is rejected.';
+                return;
+            }
+
+            activities[activityNo - 1].grade = grade;
+
+            document.getElementById('activityNo').value = '';
+            document.getElementById('activityGrade').value = '';
+            updateTable();
+        }
+
+        function deleteActivity() {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.innerText = '';
+
+            if (activities.length === 0) {
+                errorMessage.innerText = 'Error Message: No more activities to remove.';
+                return;
+            }
+
+            activities.pop();
+            updateTable();
+        }
+
+        function updateTable() {
+            const tableBody = document.getElementById('activityTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            activities.forEach((activity, index) => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).innerText = index + 1;
+                row.insertCell(1).innerText = activity.name;
+                row.insertCell(2).innerText = activity.weight;
+                row.insertCell(3).innerText = activity.grade;
+            });
+        }
+    </script>
+</body>
+</html>
